@@ -1,0 +1,39 @@
+name: Create Copilot Instructions
+description: Create comprehensive copilot-instructions.md based on codebase analysis
+title: "Create Copilot Instructions"
+labels: ["documentation", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Request
+        
+        Please create a `copilot-instructions.md` file for this repository. The instructions should be generated based on a thorough analysis of the entire codebase and should provide clear, actionable guidance for GitHub Copilot and future contributors.
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Key Focus Areas
+        
+        - **Maintain code quality:** Document coding standards, architectural patterns, and best practices that should be followed.
+        - **Test coverage:** Specify requirements and expectations for automated testing, including coverage thresholds and locations of tests.
+        - **Linting rules:** List and explain all linting and formatting rules to be enforced, referencing configuration files if present (e.g., ESLint, Prettier).
+        - **Adherence to existing guidelines:** Summarize and link to any existing documentation for contribution, style guides, review processes, or CI/CD requirements.
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Requirements
+        
+        - The `copilot-instructions.md` should be clear, concise, and easily adaptable for use in similar repositories.
+        - Review all configuration files, documentation, and code comments for relevant standards.
+        - Highlight any repository-specific nuances.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any additional context or specific requirements for this repository
+      placeholder: Any repository-specific considerations...
+    validations:
+      required: false
