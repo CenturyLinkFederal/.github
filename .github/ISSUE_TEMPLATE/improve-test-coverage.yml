@@ -1,0 +1,86 @@
+name: Improve Test Coverage
+description: Improve test coverage using Playwright or your testing framework of choice
+title: "Improve test coverage using Playwright or your testing framework of choice"
+labels: ["testing", "enhancement", "playwright"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Repository Analysis
+
+        - **Primary Language:** TypeScript using Vue 3
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Objective
+
+        Improve Playwright test coverage for this repo to ensure comprehensive testing aiming for at least 80% coverage across all categories: statements, branches, functions, and lines. If you cannot achieve this goal of 80% please do your best to improve test coverage as much as possible and explain why you aren't able to exceed 80% coverage if necessary.
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Instructions
+
+        - Review existing test files, if present, to understand current coverage
+        - Analyze current test coverage using appropriate tools
+
+  - type: markdown
+    attributes:
+      value: |
+        ## General Instructions
+
+        - Create a pull request for the unit test coverage improvements
+        - Minimize the number of commits
+        - Before starting, check coverage and print the human-readable result in the PR description
+        - After completing the work, check coverage and print the human-readable result in the PR description
+        - Ensure all tests pass before asking for a review of the PR
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Description
+
+        We need to improve the test coverage in our repository to ensure better code quality and reliability. This task involves writing additional unit tests for the existing codebase, identifying untested areas, and ensuring that all critical paths are covered.
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Tasks
+
+        - Review the current test coverage report to identify areas with insufficient coverage
+        - Write unit tests for uncovered or poorly covered code sections
+        - Ensure that all critical paths and edge cases are tested
+        - Refactor existing tests for better readability and maintainability, if necessary
+        - Update the test coverage report and ensure it meets the project's standards
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Acceptance Criteria
+
+        - Test coverage should be increased by at least 50% with a goal of 80% of lines covered
+        - All new tests should pass without errors
+        - The updated test coverage report should reflect the improvements
+
+  - type: textarea
+    id: current-coverage
+    attributes:
+      label: Current Coverage Metrics
+      description: Paste the current coverage report if available
+      placeholder: |
+        Statements: X%
+        Branches: X%
+        Functions: X%
+        Lines: X%
+    validations:
+      required: false
+
+  - type: textarea
+    id: areas-of-focus
+    attributes:
+      label: Specific Areas of Focus
+      description: List any specific files, modules, or features that need priority testing
+      placeholder: List files or modules that need attention...
+    validations:
+      required: false
