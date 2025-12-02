@@ -1,0 +1,61 @@
+name: 📚 Documentation
+description: Report an issue with documentation or suggest improvements
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us improve our documentation!
+  
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Type of Documentation Issue
+      description: What type of documentation issue is this?
+      options:
+        - Missing documentation
+        - Incorrect documentation
+        - Unclear documentation
+        - Outdated documentation
+        - Documentation improvement
+        - Other
+    validations:
+      required: true
+  
+  - type: textarea
+    id: location
+    attributes:
+      label: Documentation Location
+      description: Where is the documentation located?
+      placeholder: |
+        Provide a link or file path to the documentation in question.
+    validations:
+      required: true
+  
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Issue Description
+      description: Describe the issue with the documentation
+      placeholder: A clear and concise description of what's wrong or missing.
+    validations:
+      required: true
+  
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Suggested Fix
+      description: If you have a suggestion for how to fix or improve the documentation, please describe it here.
+      placeholder: What changes would you suggest?
+    validations:
+      required: false
+  
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the documentation issue here.
+      placeholder: Any additional information that might be helpful
+    validations:
+      required: false
