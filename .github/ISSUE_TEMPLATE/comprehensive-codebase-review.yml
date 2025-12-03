@@ -2,19 +2,25 @@ name: Comprehensive Codebase Review
 description: Comprehensive codebase, architecture, and pipeline review with modernization recommendations
 title: "Comprehensive Codebase, Architecture, and Pipeline Review with Modernization Recommendations"
 labels: ["review", "architecture", "ci-cd", "modernization"]
+assignees:
+  - Copilot
 body:
-  - type: markdown
+  - type: textarea
+    id: objective
     attributes:
+      label: Objective
+      description: Purpose of this review
       value: |
-        ## Objective
-        
         Conduct a thorough evaluation of the codebase in this repository, assessing best practices, identifying areas of concern, and providing a general critique. This review must include a high-level architectural document and functional summary, API and library dependency inventories, and a model object topology. Examine the build pipeline and CI/CD workflows for health and modernization opportunities, including a root cause analysis of common failures and outdated technologies.
+    validations:
+      required: true
 
-  - type: markdown
+  - type: textarea
+    id: scope
     attributes:
+      label: Scope
+      description: Areas to be analyzed
       value: |
-        ## Scope
-        
         - Analyze the overall code quality and structure
         - Identify usage (or lack) of best practices for the technology being used
         - Highlight any notable strengths or areas for improvement in the code
@@ -30,12 +36,15 @@ body:
         - Generate and include an architecture diagram using Mermaid syntax to visually represent the system architecture and key interactions
         - Summarize all open GitHub issues addressing improvements with details and possible solution steps for each
         - Place all generated output (documents, diagrams, summaries, etc.) under a root folder called `copilot-eval` for organizational clarity
+    validations:
+      required: true
 
-  - type: markdown
+  - type: textarea
+    id: scoring
     attributes:
+      label: Scoring Breakdown (1-10 scale)
+      description: Score each category
       value: |
-        ## Scoring Breakdown (1-10 scale)
-        
         | Category         | Score | Justification |
         |------------------|-------|---------------|
         | Code Quality     |       |               |
@@ -48,14 +57,17 @@ body:
         | Documentation    |       |               |
         | Modernization    |       |               |
         | Dependencies     |       |               |
-        
-        *Please fill in each category with an appropriate score and justification based on your analysis.*
 
-  - type: markdown
+        *Please fill in each category with an appropriate score and justification based on your analysis.*
+    validations:
+      required: true
+
+  - type: textarea
+    id: deliverables
     attributes:
+      label: Deliverables
+      description: Expected outputs
       value: |
-        ## Deliverables
-        
         - Written summary of findings (best practices, concerns, critique) → `copilot-eval/summary.md`
         - High-level architectural document and functional summary → `copilot-eval/architecture.md`
         - Inventories of all API and external library dependencies → `copilot-eval/dependencies.md`
@@ -66,9 +78,11 @@ body:
         - Assigned numerical score (1-10) with rationale → `copilot-eval/scoring.md`
         - Mermaid architecture diagram visualizing the system → `copilot-eval/architecture.mmd`
         - Summary of open GitHub improvement issues with details and solution steps → `copilot-eval/improvement-issues.md`
-        
+
         All output should be placed under the `copilot-eval` root folder.
         If a `.prettierignore` file exists add the path to the `copilot-eval` folder.
+    validations:
+      required: true
 
   - type: textarea
     id: additional-notes
