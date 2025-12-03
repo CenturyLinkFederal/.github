@@ -3,7 +3,7 @@ description: Comprehensive codebase, architecture, and pipeline review with mode
 title: "Comprehensive Codebase, Architecture, and Pipeline Review with Modernization Recommendations"
 labels: ["review", "architecture", "ci-cd", "modernization"]
 assignees:
-  - @copilot
+  - copilot
 body:
   - type: textarea
     id: objective
