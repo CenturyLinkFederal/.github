@@ -3,7 +3,7 @@ description: Create comprehensive copilot-instructions.md based on codebase anal
 title: "Create Copilot Instructions"
 labels: ["documentation", "enhancement"]
 assignees:
-  - Copilot
+  - copilot
 body:
   - type: textarea
     id: request
