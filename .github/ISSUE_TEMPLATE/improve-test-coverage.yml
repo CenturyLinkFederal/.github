@@ -3,7 +3,7 @@ description: Improve test coverage using Playwright or your testing framework of
 title: "Improve test coverage using Playwright or your testing framework of choice"
 labels: ["testing", "enhancement", "playwright"]
 assignees:
-  - Copilot
+  - @copilot
 body:
   - type: textarea
     id: repository-analysis
