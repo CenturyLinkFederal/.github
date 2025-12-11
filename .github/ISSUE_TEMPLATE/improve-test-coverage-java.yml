@@ -1,7 +1,7 @@
-name: Improve Test Coverage Playwright
-description: Improve test coverage using Playwright (Typescript and Vue 3)
-title: "Improve test coverage using Playwright (Typescript and Vue 3)"
-labels: ["testing", "enhancement", "playwright"]
+name: Improve Test Coverage Java
+description: Improve test coverage using JUnit (Java)
+title: "Improve test coverage using JUnit (Java)"
+labels: ["testing", "enhancement", "junit"]
 assignees:
   - copilot
 body:
@@ -11,7 +11,7 @@ body:
       label: Repository Analysis
       description: Primary language and framework information
       value: |
-        **Primary Language:** TypeScript using Vue 3
+        **Primary Language:** Java
     validations:
       required: true
 
@@ -21,7 +21,7 @@ body:
       label: Objective
       description: Goal for test coverage improvement
       value: |
-        Improve Playwright test coverage for this repo to ensure comprehensive testing aiming for at least 80% coverage across all categories: statements, branches, functions, and lines. If you cannot achieve this goal of 80% please do your best to improve test coverage as much as possible and explain why you aren't able to exceed 80% coverage if necessary.
+        Improve JUnit test coverage for this repo to ensure comprehensive testing aiming for at least 80% coverage across all categories: statements, branches, functions, and lines. If you cannot achieve this goal of 80% please do your best to improve test coverage as much as possible and explain why you aren't able to exceed 80% coverage if necessary.
     validations:
       required: true
 
@@ -45,6 +45,7 @@ body:
         - Create a pull request for the unit test coverage improvements
         - Minimize the number of commits
         - Before starting, check coverage and print the human-readable result in the PR description
+        - If needed use Mockito to assist with mock objects for testing
         - After completing the work, check coverage and print the human-readable result in the PR description
         - Ensure all tests pass before asking for a review of the PR
     validations:

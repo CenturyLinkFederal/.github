@@ -38,6 +38,15 @@ Drive test coverage improvements with clear goals:
 - Before/after coverage reporting requirements
 - Structured acceptance criteria
 
+### 4. Improve Test Coverage (Java)
+**File:** `.github/ISSUE_TEMPLATE/improve-test-coverage-java.yml`
+
+Focus on Java repositories that rely on JUnit:
+- Emphasizes achieving at least 80% coverage with JUnit and Mockito support
+- Requires documenting before/after coverage metrics in the PR description
+- Highlights critical path testing plus refactoring existing tests when needed
+- Provides detailed task list tailored to Java-specific edge cases
+
 ## How to Use
 
 ### Option 1: Copy to Your Repository
