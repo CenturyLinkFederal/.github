@@ -47,6 +47,7 @@ body:
         - Before starting, check coverage and print the human-readable result in the PR description
         - After completing the work, check coverage and print the human-readable result in the PR description
         - Ensure all tests pass before asking for a review of the PR
+        - Do not introduce any secrets or sensitive information in the tests
     validations:
       required: true
 
