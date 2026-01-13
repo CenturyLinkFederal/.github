@@ -75,7 +75,7 @@ body:
         - Update the test coverage report and ensure it meets the project's standards
     validations:
       required: true
-      
+
   - type: textarea
     id: mandates
     attributes:
