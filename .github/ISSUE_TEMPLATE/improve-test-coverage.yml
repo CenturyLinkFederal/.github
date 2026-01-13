@@ -76,6 +76,18 @@ body:
       required: true
 
   - type: textarea
+    id: mandates
+    attributes:
+      label: Mandates
+      description: Mandates
+      value: |
+        - Do not perform synthetic testing or smoke tests.
+        - Do not use introspection or other tricks to inflate code coverage without valid unit tests.
+        - Do not create tests solely to increase test coverage alone without asserting expectations.        
+    validations:
+      required: true
+
+  - type: textarea
     id: acceptance-criteria
     attributes:
       label: Acceptance Criteria
