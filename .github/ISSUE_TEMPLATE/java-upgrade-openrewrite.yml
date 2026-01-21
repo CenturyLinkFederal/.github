@@ -154,5 +154,4 @@ body:
     attributes:
       value: |
         ### References
-        - Prompt guidance: prompts/java-upgrade-openrewrite.md
         - OpenRewrite recipes: https://docs.openrewrite.org/recipes/java
