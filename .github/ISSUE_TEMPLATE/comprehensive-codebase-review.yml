@@ -11,7 +11,7 @@ body:
       label: Objective
       description: Purpose of this review
       value: |
-        Conduct a thorough evaluation of the codebase in this repository, assessing best practices, identifying areas of concern, and providing a general critique. This review must include a high-level architectural document and functional summary, API and library dependency inventories, and a model object topology. Examine the build pipeline and CI/CD workflows for health and modernization opportunities, including a root cause analysis of common failures and outdated technologies.
+        Direct an experienced principal software architect to perform a holistic assessment of this repository. Start by validating guardrails (confirm the repo contains source code and build tooling; stop and report if it is purely documentation). When the review proceeds, require proportional coverage for each primary language or framework, ensure all outputs live under a `copilot-eval` folder, and capture actionable modernization guidance together with risks and remediation next steps.
     validations:
       required: true
 
@@ -21,21 +21,15 @@ body:
       label: Scope
       description: Areas to be analyzed
       value: |
-        - Analyze the overall code quality and structure
-        - Identify usage (or lack) of best practices for the technology being used
-        - Highlight any notable strengths or areas for improvement in the code
-        - Provide a high-level architectural document, including a functional summary
-        - List all API dependencies
-        - List all external library dependencies
-        - Provide an organized topology of any model objects
-        - Review the build pipeline configuration and CI/CD workflows for health
-        - List explanations and root causes for any common CI/CD failures
-        - Suggest improvements for code quality, pipeline, or automation
-        - Summarize findings of any outdated, old, or antiquated technologies, libraries, or resources, with modernization recommendations
-        - Assign a numerical score (1-10) based on the overall evaluation, with justification
-        - Generate and include an architecture diagram using Mermaid syntax to visually represent the system architecture and key interactions
-        - Summarize all open GitHub issues addressing improvements with details and possible solution steps for each
-        - Place all generated output (documents, diagrams, summaries, etc.) under a root folder called `copilot-eval` for organizational clarity
+        - Guardrails: verify the repository includes executable source code plus build tooling (abort if only docs exist); acknowledge and cover each primary language or framework proportionally.
+        - Repository intake: map structure, key modules and services, build systems, runtimes, deployment models, functional domains, and major entry points.
+        - Code quality & best practices: evaluate architecture, patterns, strengths, anti-patterns, and model topologies with referenced evidence.
+        - Dependency & API inventory: catalog external APIs/SDKs (purpose, usage) and third-party libraries/frameworks with versions and upgrade considerations.
+        - Testing, security, performance, maintainability: assess strategy, coverage signals, vulnerabilities, compliance, performance factors, documentation, modularity, and onboarding friction.
+        - CI/CD & operations: inspect pipelines, automation scripts, IaC, recurring failures, flaky tests, and recommend tooling reliability improvements.
+        - Modernization roadmap: flag outdated platforms, suggest upgrade sequencing, quick wins, longer-term initiatives, and cost/impact rationale.
+        - Scoring & reporting: assign 1-10 scores for required categories, produce a Mermaid architecture diagram, summarize open improvement issues with links and actions, and close with explicit stakeholder next steps.
+        - Special instructions: reference files by relative path, append `copilot-eval` to `.prettierignore` if it exists, generate Chi and logging reviews when applicable (Vue UI or Java code), and ensure all artifacts reside under `copilot-eval/`.
     validations:
       required: true
 
@@ -45,20 +39,22 @@ body:
       label: Scoring Breakdown (1-10 scale)
       description: Score each category
       value: |
-        | Category         | Score | Justification |
-        |------------------|-------|---------------|
-        | Code Quality     |       |               |
-        | Architecture     |       |               |
-        | Testing          |       |               |
-        | Security         |       |               |
-        | Performance      |       |               |
-        | Maintainability  |       |               |
-        | CI/CD Pipeline   |       |               |
-        | Documentation    |       |               |
-        | Modernization    |       |               |
-        | Dependencies     |       |               |
+        | Category               | Score | Justification |
+        |------------------------|-------|---------------|
+        | Code Quality           |       |               |
+        | Architecture           |       |               |
+        | Testing                |       |               |
+        | Security               |       |               |
+        | Performance            |       |               |
+        | Maintainability        |       |               |
+        | CI/CD Pipeline         |       |               |
+        | Documentation          |       |               |
+        | Modernization          |       |               |
+        | Dependencies           |       |               |
+        | CHI Compliance (if applicable) |       |               |
+        | Logging (if applicable)        |       |               |
 
-        *Please fill in each category with an appropriate score and justification based on your analysis.*
+        *Provide a numeric score (1-10) and concise justification for every relevant dimension. Note conditional categories only when they apply.*
     validations:
       required: true
 
@@ -68,19 +64,20 @@ body:
       label: Deliverables
       description: Expected outputs
       value: |
-        - Written summary of findings (best practices, concerns, critique) → `copilot-eval/summary.md`
-        - High-level architectural document and functional summary → `copilot-eval/architecture.md`
-        - Inventories of all API and external library dependencies → `copilot-eval/dependencies.md`
-        - Organized model object topology → `copilot-eval/model-topology.md`
-        - CI/CD health analysis and failure root cause explanations → `copilot-eval/ci-cd.md`
-        - Suggestions for code, pipeline, and automation improvements → `copilot-eval/improvements.md`
-        - Modernization recommendations → `copilot-eval/modernization.md`
-        - Assigned numerical score (1-10) with rationale → `copilot-eval/scoring.md`
-        - Mermaid architecture diagram visualizing the system → `copilot-eval/architecture.mmd`
-        - Summary of open GitHub improvement issues with details and solution steps → `copilot-eval/improvement-issues.md`
+        - Narrative findings, strengths, risks → `copilot-eval/summary.md`
+        - Architecture overview and functional summary → `copilot-eval/architecture.md`
+        - Dependency and external API inventories → `copilot-eval/dependencies.md`
+        - Model and data topology → `copilot-eval/model-topology.md`
+        - CI/CD health, failure diagnostics, automation gaps → `copilot-eval/ci-cd.md`
+        - Recommended code, pipeline, and automation improvements → `copilot-eval/improvements.md`
+        - Modernization roadmap with prioritized actions → `copilot-eval/modernization.md`
+        - Scoring table with 1-10 ratings and rationales → `copilot-eval/scoring.md`
+        - Mermaid architecture diagram source → `copilot-eval/architecture.mmd`
+        - Improvement-focused GitHub issue synopsis → `copilot-eval/improvement-issues.md`
+        - Chi design system compliance review (only when a Vue UI exists) → `copilot-eval/chi-compliance.md`
+        - Logging practices review (only when Java code exists) → `copilot-eval/logging-review.md`
 
-        All output should be placed under the `copilot-eval` root folder.
-        If a `.prettierignore` file exists add the path to the `copilot-eval` folder.
+        Place every artifact inside `copilot-eval/`. If a `.prettierignore` file exists, append `copilot-eval` without removing existing entries. Close deliverables with clear next steps or stakeholder questions when risks remain.
     validations:
       required: true
 
