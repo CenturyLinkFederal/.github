@@ -1,0 +1,158 @@
+name: Upgrade to Java 25 with OpenRewrite
+description: "Migrate a Java codebase to target Java 25 using OpenRewrite recipes."
+title: "chore: upgrade to Java 25"
+labels: ["chore", "java", "openrewrite"]
+assignees:
+  - copilot
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Summary
+        Coordinate the migration of this repository to Java 25 using OpenRewrite automation and follow-up verification.
+
+  - type: textarea
+    id: repository-analysis
+    attributes:
+      label: Repository Analysis
+      description: Confirm the project qualifies for this upgrade.
+      value: |
+        - Primary language(s):
+        - Build system(s) (note whether Maven and/or Gradle are present; prefer Maven as authoritative):
+        - Current Java version target (source/bytecode/toolchain):
+        - Evidence that Java < 25 is enforced (build file excerpts, CI configuration, etc.):
+        - If the project already targets Java 25 or is not primarily Java, explain and close this issue instead of proceeding.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: guardrails
+    attributes:
+      label: Guardrails
+      description: These must be true before any migration work begins.
+      options:
+        - label: "Repository contains Java source or build configuration."
+          required: true
+        - label: "Current Java version target is below 25."
+          required: true
+
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: Desired outcome for the upgrade.
+      value: |
+        Upgrade all build, tooling, and runtime configurations to require Java 25 while leveraging official OpenRewrite recipes for automated code and configuration updates. Capture all commands used and document manual follow-up work.
+    validations:
+      required: true
+
+  - type: textarea
+    id: instructions
+    attributes:
+      label: Instructions
+      description: Steps to follow for the migration.
+      value: |
+        - Inventory build scripts, toolchains, Dockerfiles, and CI workflows to locate Java-version settings.
+        - Identify appropriate OpenRewrite recipes (for example `org.openrewrite.java.migrate.JavaVersion25`) and plan to execute them with Maven (`mvn rewrite:run`) when available.
+        - Update Maven configuration files to target Java 25 before or after applying the recipes, then align Gradle or other build tooling if necessary.
+        - Execute OpenRewrite with reproducible commands (prefer Maven) and capture the output.
+        - Review automated changes, apply manual fixes where needed, and rerun relevant builds/tests on Java 25.
+        - Produce a migration report describing changes, commands, manual adjustments, and remaining risks or TODOs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: general-instructions
+    attributes:
+      label: General Instructions
+      description: Standard working agreements.
+      value: |
+        - Keep the change set focused on the Java 25 migration.
+        - Limit commits to those necessary for the upgrade and testing.
+        - Document every command (OpenRewrite, build, tests) in this issue or the resulting PR description, including Maven invocations when used.
+        - Ensure all automated checks pass on Java 25 before requesting review.
+        - Do not commit secrets, credentials, or generated binaries.
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Migration Scope
+      description: Overview of affected areas.
+      value: |
+        Summarize the components, modules, or services expected to change during this migration. Highlight any third-party dependencies or tooling that might require upgrades to remain compatible with Java 25.
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks
+      description: Checklist of activities to complete.
+      value: |
+        - Verify guardrails (Java project, target < 25) and document findings.
+        - Choose and configure OpenRewrite recipes for Java 25 migration.
+        - Update Maven build scripts first, then any secondary build tooling, alongside toolchains, Dockerfiles, and CI workflows to require Java 25.
+        - Run OpenRewrite recipes via Maven where possible; capture commands and results (note any non-Maven execution).
+        - Perform manual follow-up edits where recipes fall short.
+        - Execute full build/test suite on Java 25 and note outcomes.
+        - Draft migration report with summary, commands, manual fixes, and follow-up items.
+    validations:
+      required: true
+
+  - type: textarea
+    id: mandates
+    attributes:
+      label: Mandates
+      description: Constraints to observe.
+      value: |
+        - Do not proceed if the project already targets Java 25 or is not primarily Java.
+        - Avoid superficial version bumps without validating builds/tests on Java 25.
+        - Do not remove or downgrade existing testing or quality gates to make the upgrade pass.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Success conditions for closure.
+      value: |
+        - Java 25 is configured across build scripts, toolchains, Dockerfiles, and CI workflows.
+        - OpenRewrite commands used for the migration are documented and reproducible, with Maven usage highlighted when available.
+        - All builds/tests pass on Java 25 or documented exceptions include remediation plans.
+        - Migration report (summary, commands, manual changes, risks) is attached or linked.
+    validations:
+      required: true
+
+  - type: textarea
+    id: results
+    attributes:
+      label: Results and Commands
+      description: Record the final state after performing the upgrade.
+      placeholder: |
+        - OpenRewrite command(s) with flags (note Maven execution when used)
+        - Build/test command outputs
+        - Manual fixes with rationale
+    validations:
+      required: false
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and Follow-ups
+      description: Outstanding work or concerns post-migration.
+      placeholder: |
+        - Remaining blockers
+        - Dependencies awaiting upgrades
+        - Known compatibility issues
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ### References
+        - Prompt guidance: prompts/java-upgrade-openrewrite.md
+        - OpenRewrite recipes: https://docs.openrewrite.org/recipes/java
