@@ -29,7 +29,9 @@ body:
         - CI/CD & operations: inspect pipelines, automation scripts, IaC, recurring failures, flaky tests, and recommend tooling reliability improvements.
         - Modernization roadmap: flag outdated platforms, suggest upgrade sequencing, quick wins, longer-term initiatives, and cost/impact rationale.
         - Scoring & reporting: assign 1-10 scores for required categories, produce a Mermaid architecture diagram, summarize open improvement issues with links and actions, and close with explicit stakeholder next steps.
-        - Special instructions: reference files by relative path, append `copilot-eval` to `.prettierignore` if it exists, generate Chi and logging reviews when applicable (Vue UI or Java code), and ensure all artifacts reside under `copilot-eval/`.
+        - Special instructions: reference files by relative path, append `copilot-eval` to `.prettierignore` if it exists, and ensure all artifacts reside under `copilot-eval/`.
+        - Vue UI guidance: evaluate every view, page, and component against Chi component usage (web components or HTML boilerplate), treating the CDN-style script or stylesheet version declared in the primary HTML entrypoint as the canonical Chi release even if chi-vue packages differ.
+        - Java logging guidance: audit logging statements for noisy or frivolous entries, confirm true exceptions log full stack context, and surface any swallowed errors.
     validations:
       required: true
 
@@ -74,10 +76,76 @@ body:
         - Scoring table with 1-10 ratings and rationales → `copilot-eval/scoring.md`
         - Mermaid architecture diagram source → `copilot-eval/architecture.mmd`
         - Improvement-focused GitHub issue synopsis → `copilot-eval/improvement-issues.md`
-        - Chi design system compliance review (only when a Vue UI exists) → `copilot-eval/chi-compliance.md`
-        - Logging practices review (only when Java code exists) → `copilot-eval/logging-review.md`
+        - Chi design system compliance review (Vue UI only; analyze all views/pages/components, cite deviations, prioritize remediation steps, include a 1-10 compliance score, and base versioning on the CDN reference) → `copilot-eval/chi-compliance.md`
+        - Logging practices review (Java code only; include a 1-10 logging hygiene score, highlight noisy/frivolous logs, confirm exceptions retain full stack traces, flag swallowed errors) → `copilot-eval/logging-review.md`
 
         Place every artifact inside `copilot-eval/`. If a `.prettierignore` file exists, append `copilot-eval` without removing existing entries. Close deliverables with clear next steps or stakeholder questions when risks remain.
+    validations:
+      required: true
+
+  - type: textarea
+    id: completeprompt
+    attributes:
+      label: Full Prompt
+      description: The job to be done
+      value: |
+        You are an experienced principal software architect. Deliver a comprehensive review of the current repository and produce organized artifacts that capture findings, risks, and modernization opportunities.
+
+        Guardrails:
+        - Verify that the repository contains source code and build tooling; if only documentation exists, stop and report that the review is out of scope.
+        - If the repository spans multiple primary languages or frameworks, acknowledge each and cover them proportionally.
+        - Always create or update a root folder named copilot-eval for all generated outputs.
+
+        When the guardrails pass, complete the following:
+        1. Repository Intake
+          - Map the directory structure, key modules, services, and build systems.
+          - Summarize runtime environments, targeted platforms, and deployment models.
+          - Capture high-level functional domains and major entry points.
+        2. Code Quality & Best Practices
+          - Assess architecture, patterns, and code health per technology stack.
+          - Highlight strengths and anti-patterns, with references to supporting files.
+          - Inventory model objects and describe relationships in a dedicated topology.
+        3. Dependency & API Inventory
+          - List all external APIs, SDKs, and service integrations with purpose and usage locations.
+          - Enumerate third-party libraries and frameworks with versions and upgrade risks.
+        4. Testing, Security, Performance, Maintainability
+          - Evaluate test strategy, coverage signals, and gaps.
+          - Identify security controls, vulnerabilities, and compliance concerns.
+          - Review performance considerations (profiling artifacts, caching, load handling).
+          - Comment on maintainability factors such as modularity, documentation, and onboarding friction.
+        5. CI/CD & Operations
+          - Analyze build pipelines, automation scripts, and infrastructure-as-code assets.
+          - Diagnose repeated CI/CD failures or flaky tests with root cause hypotheses.
+          - Recommend modernization or reliability improvements for tooling and workflows.
+        6. Modernization Roadmap
+          - Detect outdated languages, frameworks, or infrastructure components.
+          - Provide upgrade paths, migration sequencing, and quick wins vs. longer-term items.
+        7. Scoring & Reporting
+          - Score each dimension (Code Quality, Architecture, Testing, Security, Performance, Maintainability, CI/CD Pipeline, Documentation, Modernization, Dependencies, CHI compliance (if applicable), logging (if applicable)) on a 1-10 scale with brief justification.
+          - Generate a Mermaid diagram that visualizes the current system architecture and key interactions.
+          - Summarize open GitHub issues related to improvements with reference links and recommended next actions.
+
+        Deliverables (all under copilot-eval/):
+        - summary.md — narrative findings, strengths, and concerns.
+        - architecture.md — high-level architecture document and functional summary.
+        - dependencies.md — API and library dependency inventories.
+        - model-topology.md — organized object and data model topology.
+        - ci-cd.md — pipeline health assessment and failure analysis.
+        - improvements.md — recommended code, pipeline, and automation enhancements.
+        - modernization.md — modernization recommendations and prioritized roadmap.
+        - scoring.md — tabular scoring with 1-10 ratings and justifications.
+        - architecture.mmd — Mermaid diagram source for the architecture.
+        - improvement-issues.md — synopsis of open improvement-focused GitHub issues with solution steps.
+        - chi-compliance.md — generated only when the repository includes a Vue-based UI; evaluate every view, page, and component for adherence to the Chi design system (https://assets.ctl.io/chi/5.74.0/getting-started/?theme=Portal), catalog deviations, and prioritize remediation steps before upgrading the Chi version.  Generate a score 1-10 for this as well.
+        - logging-review.md — generated only when the repository contains Java code; inspect logging usage for noisy or frivolous events, confirm true exceptions include full stack context, and flag swallowed errors. Generate a score 1-10 for this as well.
+
+        Additional Instructions:
+        - Reference specific files with relative paths when citing evidence.
+        - If a .prettierignore file exists, append copilot-eval to the ignore list without removing existing entries.
+        - Close with explicit next steps or questions for stakeholders when risks remain unresolved.
+        - For Vue-based UI repositories, expand the analysis phase to review template markup across all views, pages, and components against Chi component guidance (web components or HTML boilerplate) and describe non-compliant patterns in chi-compliance.md.
+        - When reporting Chi compliance, treat the version declared by the CDN-style script or stylesheet reference in the primary HTML entrypoint (for example, `<script src="https://lib.lumen.com/chi/5.78.0/js/chi.js" ...>`) as the authoritative design system version even if package.json or chi-vue dependencies specify different numbers.
+        - For Java repositories, audit logging frameworks and statements to highlight excessive verbosity, missing stack traces, or swallowed exceptions and document findings in logging-review.md.
     validations:
       required: true
 
@@ -86,6 +154,10 @@ body:
     attributes:
       label: Additional Notes
       description: Add any specific areas of concern or focus for this review
+      value: | 
+        - Adapt the review depth to repository size: emphasize critical modules over exhaustive file-by-file narration.
+        - Document any assumptions about infrastructure, environments, or integrations when artifacts are missing.
+        - Prefer actionable modernization guidance with rationale, cost, and impact considerations.
       placeholder: Any specific technologies, patterns, or areas to prioritize...
     validations:
       required: false
