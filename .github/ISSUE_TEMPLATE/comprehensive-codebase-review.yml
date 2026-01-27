@@ -21,7 +21,7 @@ body:
       label: Scope
       description: Areas to be analyzed
       value: |
-        - Guardrails: verify the repository includes executable source code plus build tooling (abort if only docs exist); acknowledge and cover each primary language or framework proportionally.
+        - Guardrails: Ignore any previously generated artifacts under copilot-eval and treat the analysis as starting from scratch based on the current code in the repo. verify the repository includes executable source code plus build tooling (abort if only docs exist); acknowledge and cover each primary language or framework proportionally.
         - Repository intake: map structure, key modules and services, build systems, runtimes, deployment models, functional domains, and major entry points.
         - Code quality & best practices: evaluate architecture, patterns, strengths, anti-patterns, and model topologies with referenced evidence.
         - Dependency & API inventory: catalog external APIs/SDKs (purpose, usage) and third-party libraries/frameworks with versions and upgrade considerations.
@@ -92,6 +92,7 @@ body:
         You are an experienced principal software architect. Deliver a comprehensive review of the current repository and produce organized artifacts that capture findings, risks, and modernization opportunities.
 
         Guardrails:
+        - Ignore any previously generated artifacts under copilot-eval and treat the analysis as starting from scratch based on the current code in the repo.
         - Verify that the repository contains source code and build tooling; if only documentation exists, stop and report that the review is out of scope.
         - If the repository spans multiple primary languages or frameworks, acknowledge each and cover them proportionally.
         - Always create or update a root folder named copilot-eval for all generated outputs.
@@ -137,7 +138,7 @@ body:
         - architecture.mmd — Mermaid diagram source for the architecture.
         - improvement-issues.md — synopsis of open improvement-focused GitHub issues with solution steps.
         - chi-compliance.md — generated only when the repository includes a Vue-based UI; evaluate every view, page, and component for adherence to the Chi design system (https://assets.ctl.io/chi/5.78.0/getting-started/?theme=Portal) using any of these valid implementation patterns: 1. Chi HTML Blueprint - Using Chi CSS classes (.chi-data-table, .chi-button, etc.) with proper HTML/div structure as documented at https://assets.ctl.io/chi/5.78.0/getting-started/ 2. Chi Web Components - Using Chi's custom elements (<chi-button>, <chi-modal>, etc.) 3. Chi Vue Components - Using Vue wrappers from @centurylink/chi-vue package (ChiDataTable, ChiButton, etc.). Score compliance based on correct usage of ANY of these patterns. Flag as non-compliant only when components bypass Chi entirely with custom implementations. For partially compliant components, note when a component uses one Chi pattern (e.g., CSS classes) but could benefit from a higher-level pattern (e.g., Vue component) for better maintainability, catalog deviations, and prioritize remediation steps before upgrading the Chi version.  Generate a score 1-10 for this as well.
-        - logging-review.md — generated only when the repository contains Java code; inspect logging usage for noisy or frivolous events, confirm true exceptions include full stack context, and flag swallowed errors. Generate a score 1-10 for this as well.
+        - logging-review.md — generated only when the repository contains Java code; inspect logging usage for noisy or frivolous events, confirm true exceptions include full stack context, and flag swallowed errors. Generate a score 1-10 for this as well. Logging issues found within tests should still mentioned at the bottom of the artifact, but not prioritized.
 
         Additional Instructions:
         - Reference specific files with relative paths when citing evidence.
