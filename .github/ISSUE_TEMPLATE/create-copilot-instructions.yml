@@ -11,7 +11,7 @@ body:
       label: Request
       description: Purpose of this issue
       value: |
-        Please create a `copilot-instructions.md` file for this repository. The instructions should be generated based on a thorough analysis of the entire codebase and should provide clear, actionable guidance for GitHub Copilot and future contributors.
+        Please create a `copilot-instructions.md` file for this repository under the '.github' root directory. The instructions should be generated based on a thorough analysis of the entire codebase and should provide clear, actionable guidance for GitHub Copilot and future contributors. If a copilot-instructions.md file already exists elsewhere (like in the root of the repo) use it as a basis, update it, and move it under the '.github' folder.
     validations:
       required: true
 
@@ -34,7 +34,7 @@ body:
       label: Requirements
       description: Guidelines for creating the instructions
       value: |
-        - The `copilot-instructions.md` should be clear, concise, and easily adaptable for use in similar repositories.
+        - The `.github/copilot-instructions.md` should be clear, concise, and easily adaptable for use in similar repositories.
         - Review all configuration files, documentation, and code comments for relevant standards.
         - Highlight any repository-specific nuances.
     validations:
