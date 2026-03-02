@@ -118,7 +118,7 @@ body:
           - Analyze build pipelines, automation scripts, and infrastructure-as-code assets.
           - Diagnose repeated CI/CD failures or flaky tests with root cause hypotheses.
           - Recommend modernization or reliability improvements for tooling and workflows.
-          - Note that in the test folder "ply" is an internal integration testing tool (see https://ply-ct.org/ply/).  When evaluating integration testing look at the ply folder for existing tests.
+          - If this repository contains a `ply` directory under `test/` or a similar location, note that `ply` is an internal integration testing tool (see https://ply-ct.org/ply/). When evaluating integration testing, inspect the `ply` directory for existing tests.
         6. Modernization Roadmap
           - Detect outdated languages, frameworks, or infrastructure components.
           - Provide upgrade paths, migration sequencing, and quick wins vs. longer-term items.
