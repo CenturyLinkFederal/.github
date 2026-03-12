@@ -120,8 +120,19 @@ body:
           - Recommend modernization or reliability improvements for tooling and workflows.
           - If this repository contains a `ply` directory under `test/` or a similar location, note that `ply` is an internal integration testing tool (see https://ply-ct.org/ply/). When evaluating integration testing, inspect the `ply` directory for existing tests.
         6. Modernization Roadmap
-          - Detect outdated languages, frameworks, or infrastructure components.
-          - Provide upgrade paths, migration sequencing, and quick wins vs. longer-term items.
+          - Analyze all languages, frameworks, and infrastructure components.
+          - For each, determine: current version, release status (stable/LTS, milestone, snapshot, rc).
+          - Flag and prioritize:
+              - Outdated versions: below latest LTS/stable → recommend upgrade.
+              - Pre-release/unstable versions: milestone/snapshot/rc → recommend downgrade to latest stable/LTS.
+              - Stable/LTS versions: mark as modern/production-ready.
+          - Provide clear upgrade/downgrade migration paths.
+          - Sequence modernization tasks for maximum stability and safety:
+              1. Replace pre-release/milestone/snapshot dependencies with latest stable/LTS versions.
+              2. Upgrade outdated dependencies.
+              3. Enhance with resilience, observability, and performance.
+          - Justify recommendations: explain risks and benefits for each change.
+          - List quick wins for stabilization and security, and note longer-term investments.
         7. Scoring & Reporting
           - Score each dimension (Code Quality, Architecture, Testing, Security, Performance, Maintainability, CI/CD Pipeline, Documentation, Modernization, Dependencies, CHI compliance (if applicable), logging (if applicable)) on a 1-10 scale with brief justification.
           - Generate a Mermaid diagram that visualizes the current system architecture and key interactions.
