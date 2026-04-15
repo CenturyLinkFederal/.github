@@ -1,0 +1,154 @@
+name: Upgrade Java 25 + Spring Boot 4.5 via OpenRewrite
+description: Track combined migration from Java 21 to Java 25 and Spring Boot 3.x to 4.5.x using OpenRewrite.
+title: "[Upgrade] Java 25 + Spring Boot 4.5 via OpenRewrite"
+labels:
+  - tech-debt
+  - upgrade
+  - java
+  - spring-boot
+  - openrewrite
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this issue to manage a combined OpenRewrite modernization:
+        - Java **21 -> 25**
+        - Spring Boot **3.x -> 4.5.x**
+
+        Recommended baseline commands:
+
+        ```bash
+        mvn org.openrewrite.maven:rewrite-maven-plugin:dryRun
+        mvn org.openrewrite.maven:rewrite-maven-plugin:run
+        mvn clean install
+        ```
+
+  - type: input
+    id: target-repository
+    attributes:
+      label: Target repository
+      description: Repository where the migration will be performed.
+      placeholder: org/repository-name
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Describe what will be migrated and any known exclusions.
+      placeholder: |
+        Upgrade runtime/toolchain to Java 25 and framework baseline to Spring Boot 4.5.x.
+        Align Spring Cloud and plugin/dependency compatibility.
+    validations:
+      required: true
+
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Confirm environment and dependency readiness.
+      value: |
+        - OpenRewrite Maven plugin configured (`rewrite-maven-plugin`)
+        - Java recipes dependency configured (`rewrite-migrate-java`)
+        - Spring recipes dependency configured (`rewrite-spring`)
+        - CI/build agents support Java 25
+        - Branch naming agreed (e.g., `FFP-<ticket>-java25-sb45-openrewrite`)
+    validations:
+      required: true
+
+  - type: textarea
+    id: rewrite-recipes
+    attributes:
+      label: OpenRewrite recipe plan
+      description: List intended recipes and fallback approach if exact recipes are unavailable.
+      value: |
+        Planned recipes:
+        - org.openrewrite.java.migrate.Java21to25
+        - org.openrewrite.java.spring.boot4.UpgradeSpringBoot_4_5 (or nearest available 4.x recipe)
+        - org.openrewrite.java.spring.framework.UpgradeSpringFramework_7_0
+
+        Fallback:
+        - Apply nearest available recipe and manually perform remaining version deltas.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: implementation-checklist
+    attributes:
+      label: Implementation checklist
+      description: Mark tasks as complete as work progresses.
+      options:
+        - label: Create upgrade branch and pre-migration checkpoint commit
+        - label: Run OpenRewrite dry run and review generated report
+        - label: Apply OpenRewrite recipes and review source/config diffs
+        - label: Update Java version/toolchain and container base images to Java 25
+        - label: Update Spring Boot to 4.5.x and align Spring Cloud compatibility
+        - label: Upgrade/align Lombok version and annotation processor configuration for Java 25 + Spring Boot 4.5
+        - label: Resolve Lombok-related compile or IDE annotation processing errors (builders/getters/setters/logging annotations)
+        - label: Validate configuration key changes (`application*.yml` / properties)
+        - label: Resolve compile/test/plugin compatibility issues
+        - label: Resolve unit test failures introduced by migration (including Mockito strictness/stubbing issues)
+        - label: Execute full build and tests (`mvn clean install`, `mvn clean test`)
+        - label: Execute quality gates (Checkstyle, coverage, static checks)
+        - label: Perform smoke test (health endpoint + key business flows)
+
+  - type: checkboxes
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: All must be satisfied before closure.
+      options:
+        - label: Build passes on Java 25 and Spring Boot 4.5.x
+        - label: No Lombok-related compile errors remain in main/test sources
+        - label: Unit/integration tests pass with no regressions
+        - label: No unit test errors in CI output (`Failures: 0`, `Errors: 0`)
+        - label: Coverage threshold is met
+        - label: Lint/checkstyle gates pass
+        - label: App starts successfully in target profile(s)
+        - label: Health/readiness endpoints return UP
+        - label: No critical runtime errors observed during smoke tests
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and mitigations
+      description: Capture known migration risks and mitigation approach.
+      value: |
+        - Risk: Recipe/version mismatch for Boot 4.5
+          Mitigation: Use nearest recipe + manual version alignment.
+        - Risk: Spring Cloud incompatibility
+          Mitigation: Validate against official compatibility matrix.
+        - Risk: Dependency/transitive conflicts
+          Mitigation: Review dependency tree and pin known-good versions.
+        - Risk: Lombok incompatibility after JDK/framework upgrade
+          Mitigation: Upgrade Lombok + verify annotationProcessor path and IDE annotation processing settings.
+        - Risk: Behavior/config binding changes
+          Mitigation: Add/adjust tests and review startup warnings.
+
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback plan
+      description: Define concrete rollback steps.
+      value: |
+        - Revert migration commits or reset to pre-upgrade commit.
+        - Restore prior Java/Spring Boot/Spring Cloud versions.
+        - Redeploy previously known-good artifact/image.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Add relevant links and internal docs.
+      value: |
+        - https://docs.openrewrite.org/recipes/java/migrate
+        - https://docs.openrewrite.org/recipes/java/spring
+        - https://github.com/openrewrite/rewrite-migrate-java
+        - https://github.com/openrewrite/rewrite-spring
+        - https://spring.io/projects/spring-boot
+        - https://spring.io/projects/spring-cloud
+
+
