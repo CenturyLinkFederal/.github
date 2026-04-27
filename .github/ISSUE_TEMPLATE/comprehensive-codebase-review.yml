@@ -58,7 +58,7 @@ body:
         | Logging (if applicable)        |       |               |
 
         *Provide a numeric score (1-10) and concise justification for every relevant dimension. Note conditional categories only when they apply.*
-        *It is important this scoring is consistent with the details findings and justifications provided in the associated deliverables (e.g., chi-compliance.md should support the CHI Compliance score, logging-review.md should support the Logging score, etc.).*
+        *It is important this scoring is consistent with the detailed findings and justifications provided in the associated deliverables (e.g., chi-compliance.md should support the CHI Compliance score, logging-review.md should support the Logging score, etc.).*
         *It is imperative that the scoring table generated in scoring.md follows the standard column structure defined here and is generated consistently for all repos, with no deviations or dedicated columns for individual modules—only a numeric score in the score column. This table will be parsed by a report and must strictly adhere to this format for parsing to succeed.*
     validations:
       required: true
