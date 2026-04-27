@@ -22,6 +22,7 @@ body:
       description: Areas to be analyzed
       value: |
         - Guardrails: Ignore any previously generated artifacts under copilot-eval and treat the analysis as starting from scratch based on the current code in the repo. verify the repository includes executable source code plus build tooling (abort if only docs exist); acknowledge and cover each primary language or framework proportionally.
+        - For non-UI repos check for the existence of a pom.xml in the root of the repo if there check for multiple modules listed as nodes under project/modules.  If multiple modules exist treat each as its own report with individualized reports within all of the artifacts generated.  When scoring take an average of the scores across the modules discovered to arrive at repo level score for each of the scoring criteria. The scoring table generated in scoring.md ***must*** follow standard column structure consistently generated for all repos - that means no dedicated column for individual modules just a score column with a number that is the calculated average of any modules evaluated.  If multiple modules exist with unique score present provide those score breakdown in an additional set of unique tables further down in the scoring.md.
         - Repository intake: map structure, key modules and services, build systems, runtimes, deployment models, functional domains, and major entry points.
         - Code quality & best practices: evaluate architecture, patterns, strengths, anti-patterns, and model topologies with referenced evidence.
         - Dependency & API inventory: catalog external APIs/SDKs (purpose, usage) and third-party libraries/frameworks with versions and upgrade considerations.
@@ -57,6 +58,8 @@ body:
         | Logging (if applicable)        |       |               |
 
         *Provide a numeric score (1-10) and concise justification for every relevant dimension. Note conditional categories only when they apply.*
+        *It is important this scoring is consistent with the detailed findings and justifications provided in the associated deliverables (e.g., chi-compliance.md should support the CHI Compliance score, logging-review.md should support the Logging score, etc.).*
+        *It is imperative that the scoring table generated in scoring.md follows the standard column structure defined here and is generated consistently for all repos, with no deviations or dedicated columns for individual modules—only a numeric score in the score column. This table will be parsed by a report and must strictly adhere to this format for parsing to succeed.*
     validations:
       required: true
 
