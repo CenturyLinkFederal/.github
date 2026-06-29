@@ -206,7 +206,7 @@ body:
     attributes:
       label: AI Attribution
       description: Add any AI-generated content attribution or disclaimers for this repository
-      value: | 
+      value: |
         Ensure copilot-instructions.md has a section named AI Attribution and Traceability Policy.
 
         Idempotent behavior requirements
