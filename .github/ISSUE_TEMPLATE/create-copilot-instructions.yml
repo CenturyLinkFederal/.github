@@ -180,24 +180,7 @@ body:
           - Flag duplicated or conflicting style rules across component and global styles that can cause inconsistent rendering.
           - Flag changes that bypass established design tokens/utilities in favor of ad-hoc custom values without justification.
 
-        Key Focus Areas
-        Important aspects to cover
-        - **Maintain code quality:** Document coding standards, architectural patterns, and best practices that should be followed.
-        - **Vue + CHI standards (conditional):** For Vue-based UI repositories, define required Vue SFC patterns, CHI 5.78.0 usage rules, and anti-patterns to avoid using the embedded review summary and public CHI 5.78.0 docs.
-        - **Test coverage:** Specify requirements and expectations for automated testing, including coverage thresholds and locations of tests.
-        - **Linting rules:** List and explain all linting and formatting rules to be enforced, referencing configuration files if present (e.g., ESLint, Prettier).
-        - **Adherence to existing guidelines:** Summarize and link to any existing documentation for contribution, style guides, review processes, or CI/CD requirements.
-        - **Review checklist (conditional):** For Vue-based UI repositories, include a concise reviewer checklist for `.vue` PRs that explicitly calls out CHI class correctness, CHI markup structure, and forbidden global CHI CSS overrides.
-        - **Automatic PR review output (conditional):** For Vue-based UI repositories, require a standardized finding format in Copilot PR review comments (severity, issue, impact, fix, location) and explicit confirmation when no CHI findings exist.
-
-        Requirements
-        Guidelines for creating the instructions
-        - The `.github/copilot-instructions.md` should be clear, concise, and easily adaptable for use in similar repositories.
-        - Review all configuration files, documentation, and code comments for relevant standards.
-        - Highlight any repository-specific nuances.
-        - If the repository is Vue-based UI, include a dedicated section named `CHI 5.78.0 Compliance` with explicit do/don't rules.
-        - If the repository is Vue-based UI, include a dedicated section named `Vue PR Review Rules` with required CHI validation checks for `.vue` file changes.
-        - If the repository is Vue-based UI, include a dedicated section named `Automatic Vue UI PR Review Feedback` describing the required structure and quality bar for Copilot PR comments.
+        Note: Do not duplicate the general "Key Focus Areas" and "Requirements" content here; those are already provided in the required sections above. Keep this section focused on Vue + CHI-specific guidance and PR review expectations only.
     validations:
       required: false
 
