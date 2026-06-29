@@ -235,7 +235,7 @@ body:
         - Section title exactly AI Attribution and Traceability Policy.
         - Fixed attribution line appears exactly once in canonical form.
         - Includes assisted and autonomous mode values.
-        - Includes at least one example with model value GPT-5.3-Codex.
+        - Includes at least one example showing a concrete model value (for example `model=GPT-5.3-Codex`) and explicitly instructs replacing it with the actual model name used.
         - File remains valid markdown and readable.
     validations:
       required: false
