@@ -215,8 +215,8 @@ body:
 
         Acceptance criteria
 
-        - Section title exactly AI Attribution and Traceability Policy.
-        - Fixed attribution line appears exactly once in canonical form.
+        - Section title exactly `AI Attribution and Traceability Policy`.
+        - Canonical attribution line is specified once in canonical form (examples may repeat it).
         - Includes assisted and autonomous mode values.
         - Includes at least one example showing a concrete model value (for example `model=GPT-5.3-Codex`) and explicitly instructs replacing it with the actual model name used.
         - File remains valid markdown and readable.
