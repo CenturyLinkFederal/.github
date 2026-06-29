@@ -84,6 +84,7 @@ body:
     attributes:
       label: Vue + CHI (Conditional)
       description: CHI compliance (if applicable)
+      value: |
         Step 2 (Conditional Enhancement for Vue-Based UI Repositories Only)
 
         If, and only if, the repository is a Vue-based UI repository, enhance the generated `copilot-instructions.md` with Vue + CHI-specific guidance and PR review expectations.
