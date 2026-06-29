@@ -12,6 +12,7 @@ body:
       description: Purpose of this issue
       value: |
         Please create a `copilot-instructions.md` file for this repository under the '.github' root directory. The instructions should be generated based on a thorough analysis of the entire codebase and should provide clear, actionable guidance for GitHub Copilot and future contributors. If a copilot-instructions.md file already exists elsewhere (like in the root of the repo) use it as a basis, update it, and move it under the '.github' folder.
+        Preserve and improve instruction depth. Do not replace detailed repository guidance with a shorter summary.
     validations:
       required: true
 
@@ -22,6 +23,12 @@ body:
       description: Important aspects to cover
       value: |
         - **Maintain code quality:** Document coding standards, architectural patterns, and best practices that should be followed.
+        - **Repository architecture:** Document source layout, key modules/components, and how responsibilities are divided.
+        - **Build and validation workflow:** Include concrete command sequences used by contributors (install, build, type-check, lint, test, docs).
+        - **Operational prerequisites:** Include required authentication, environment variables, mock services, and startup timing dependencies.
+        - **CI/CD expectations:** Summarize workflows, required checks, and merge quality gates.
+        - **Troubleshooting guidance:** Include known failure modes and practical recovery commands.
+        - **PR checklist:** Include pre-submit validation steps with command-level expectations.
         - **Test coverage:** Specify requirements and expectations for automated testing, including coverage thresholds and locations of tests.
         - **Linting rules:** List and explain all linting and formatting rules to be enforced, referencing configuration files if present (e.g., ESLint, Prettier).
         - **Adherence to existing guidelines:** Summarize and link to any existing documentation for contribution, style guides, review processes, or CI/CD requirements.
@@ -37,8 +44,184 @@ body:
         - The `.github/copilot-instructions.md` should be clear, concise, and easily adaptable for use in similar repositories.
         - Review all configuration files, documentation, and code comments for relevant standards.
         - Highlight any repository-specific nuances.
+        - If an existing `copilot-instructions.md` is present, preserve all still-valid high-signal operational details (commands, ports, auth setup, CI gates, troubleshooting), then refine and expand.
+        - Include concrete commands and thresholds where available (for example lint warning limits, test coverage targets, required runtime versions).
+        - Do not output a generic template. The result must be repository-specific and actionable.
     validations:
       required: true
+
+  - type: textarea
+    id: common
+    attributes:
+      label: Common
+      description: Guidelines for creating the instructions
+      value: |
+        Step 1 (Always Required for Every Repository)
+        The instructions should be generated based on a thorough analysis of the entire codebase and should provide clear, actionable guidance for GitHub Copilot and future contributors. If a `copilot-instructions.md` file already exists elsewhere (like in the root of the repo), use it as a basis, update it, and move it under the `.github` folder.
+
+        Minimum required sections for every repository output:
+        - Repository Overview
+        - Key Technologies
+        - Build & Validation Process (command sequences)
+        - Project Architecture & Layout
+        - Configuration Files and Key Dependencies
+        - CI/CD Pipeline and Required Checks
+        - Common Issues & Solutions
+        - Development Workflow
+        - Linting and Code Style Requirements
+        - Testing Requirements (including coverage expectations if available)
+        - Pull Request Checklist
+
+        Quality bar for every repository output:
+        - Keep operationally useful detail; do not collapse detailed guidance into a high-level summary.
+        - Prefer command-level instructions over abstract descriptions.
+        - Include concrete values discovered in-repo (ports, scripts, versions, limits) when available.
+    validations:
+      required: true
+
+  - type: textarea
+    id: vue-chi
+    attributes:
+      label: Vue + CHI (Conditional)
+      description: CHI compliance (if applicable)
+      value: |
+        Step 2 (Conditional Enhancement for Vue-Based UI Repositories Only)
+
+        If, and only if, the repository is a Vue-based UI repository, enhance the generated `copilot-instructions.md` with Vue + CHI-specific guidance and PR review expectations.
+
+        Applicability Scope (Mandatory)
+        - Apply CHI compliance review rules only for Vue-based UI repositories and `.vue` UI changes.
+        - Do not apply CHI UI compliance rules to API/service repositories (for example Java or Node.js backend repos) unless they also contain Vue UI code under review.
+
+        Design System Requirement for Vue UI Repositories (Mandatory)
+        - Treat the internal CHI design system as a hard requirement for UI work in Vue-based UI repositories.
+        - Enforce CHI version `5.78.0` only. Do not recommend, mix in, or migrate to other CHI versions.
+        - Use publicly accessible CHI 5.78.0 portal documentation as the external reference point:
+          - `https://assets.ctl.io/chi/5.78.0/getting-started/?theme=Portal`
+
+        Vue + CHI Code Review Expectations (Must be included for Vue UI repositories)
+        - During code reviews of `.vue` files, always evaluate CHI compliance first.
+        - Flag any usage of incorrect CHI boilerplate HTML structure or incorrect CHI classes.
+        - Flag any CSS that overrides existing CHI selectors without added specificity or component scope.
+        - Flag global overrides of CHI classes/selectors as non-compliant unless there is a documented, narrowly scoped exception.
+        - Require UI changes in Vue SFCs to remain consistent with CHI design standards, markup conventions, and accessibility expectations.
+        - Require consistency in implementation approach (avoid mixing incompatible CHI patterns in the same component unless explicitly intended and documented).
+
+        CHI Recommendation Priority and Mapping (Must be included for Vue UI repositories)
+        - When suggesting fixes or alternatives for UI code, recommend in this order:
+          1. CHI web components (`chi-*`) first when a valid web component exists for the same use case.
+          2. CHI HTML blueprint markup (CSS classes) second.
+          3. `chi-vue` Vue wrappers third when available and already aligned with repository conventions.
+        - Always mention equivalent options when they exist (web component, HTML blueprint, and `chi-vue`) and explain why the top recommendation is preferred for the specific context.
+        - Use known CHI component inventories as guidance:
+          - CHI web components include (not exhaustive): `chi-button`, `chi-spinner`, `chi-alert`, `chi-card`, `chi-checkbox`, `chi-date-picker`, `chi-drawer`, `chi-dropdown`, `chi-modal`, `chi-pagination`, `chi-search-input`, `chi-tabs`, `chi-text-input`, `chi-textarea`, `chi-tooltip`.
+          - `chi-vue` components include (not exhaustive): `ChiCheckbox`, `ChiDataTable`, `ChiDataTableToolbar`, `ChiDrawer`, `ChiExpansionPanel`, `ChiPagination`, `ChiSearchInput`, `ChiTooltip`, `ChiTransferList`, `ChiViews`.
+        - Do not claim a CHI web component is invalid solely because it is not listed in a local `chi.ts` or local plugin registration helper. Distinguish between native CHI web components and `chi-vue` wrapper registration.
+
+        Known False-Positive Guards (Must be included for Vue UI repositories)
+        - Do not flag `type="button"` on native HTML `<button>` as invalid. It is a valid and recommended HTML attribute.
+        - If non-CHI button classes are found (example Bootstrap `btn btn-primary`), prefer recommending a CHI web component first (example `chi-button`) before CHI HTML blueprint fallback.
+        - Do not suggest replacing valid `chi-spinner` usage with HTML blueprint spinner solely because local `chi-vue` registration files do not list a spinner wrapper.
+        - Only recommend replacing `chi-spinner` when there is a verified runtime compatibility issue in the target repository, and provide evidence-based rationale.
+
+        Automatic Copilot PR Review Behavior (Must be included for Vue UI repositories)
+        - These Vue + CHI review rules must be applied during the automatic Copilot PR review that runs when a PR is opened and when new commits are pushed.
+        - For each finding, require Copilot to provide:
+          - severity (`high`, `medium`, `low`),
+          - what is wrong,
+          - why it matters (compliance, accessibility, maintainability, or regression risk),
+          - a concrete fix recommendation,
+          - file/selector/component context.
+        - For each CHI-related recommendation, require Copilot to state which recommendation tier was used (`chi-web-component`, `chi-html-blueprint`, or `chi-vue-wrapper`) and why.
+        - Prioritize comments on material UI risk and avoid low-value style nitpicks.
+        - If no CHI/CSS/UI red flags are found in changed `.vue` files, require Copilot to explicitly state that no CHI compliance findings were detected.
+        - Require Copilot to use a consistent finding template, for example:
+          - `Severity:`
+          - `Category:` (CHI compliance, CSS risk, accessibility, UI regression)
+          - `Issue:`
+          - `Why it matters:`
+          - `Suggested fix:`
+          - `Location:` (file + selector/component)
+        - Require Copilot to distinguish blocking findings from non-blocking suggestions:
+          - `high` severity should be treated as merge-blocking until resolved or explicitly waived.
+          - `medium` severity should require follow-up in the PR discussion.
+          - `low` severity should be advisory and concise.
+
+        Embedded CHI 5.78.0 Review Summary for `.vue` UI Changes
+        - Markup/layout baseline:
+          - Prefer CHI portal layout primitives: `chi-main`, `chi-grid`, `chi-col`, CHI spacing/text utilities.
+          - Require CHI component structure correctness for tabs, cards, data tables, pagination, dropdowns, modals, alerts, and buttons.
+        - Class and pattern correctness:
+          - Flag invalid/mistyped CHI classes (example: `chi-btn` instead of `chi-button`).
+          - Flag non-CHI framework utility classes (Bootstrap/Tailwind) in CHI-based UI unless explicitly approved.
+          - Flag incorrect CHI grid syntax (`chi-row`, `chi-col-6`) when CHI grid conventions require `chi-grid` and `chi-col -w--N`.
+        - Vue + CHI implementation consistency:
+          - Do not mix incompatible CHI approaches within the same component without documented intent.
+          - If CHI web components are used, review event/value bindings for component-specific patterns (for example avoid assuming universal `v-model` support).
+        - Forms and accessibility:
+          - Require label association (`for`/`id`) for inputs/selects/textareas.
+          - Require required ARIA semantics for tabs, menus, dialogs, alerts, and expand/collapse controls.
+          - Require decorative icons to be hidden from assistive tech and icon-only controls to include accessible labels.
+          - Ensure color is not the sole carrier of meaning.
+        - Common anti-pattern checks:
+          - Flag raw HTML tables when CHI data table structure is the established repo standard.
+          - Flag icon usage that is invalid for CHI 5.78.0 naming.
+          - Flag excessive inline styles/hardcoded spacing where CHI utility classes should be used.
+          - Flag adding CDN imports inside Vue SFCs when CHI is expected to be provided at app shell level.
+        - CSS override governance:
+          - Reject global overrides of CHI base selectors/classes.
+          - Reject unscoped overrides of CHI classes in shared/global styles.
+          - Allow narrowly scoped overrides only with clear justification, limited selector scope, and no broad regressions to default CHI behavior.
+        - CSS risk/red-flag checks:
+          - Flag use of `!important` on CHI-related selectors unless clearly justified and tightly scoped.
+          - Flag broad selectors that can unintentionally affect CHI globally (for example `button`, `a`, `input`, `*`, or unscoped `.chi-*` overrides).
+          - Flag risky layout overrides likely to break responsive behavior (fixed pixel heights/widths, overflow clipping, hardcoded absolute positioning without constraints).
+          - Flag brittle stacking/context changes (`z-index` escalation, forced positioning) that can break CHI overlays, dropdowns, drawers, or modals.
+          - Flag duplicated or conflicting style rules across component and global styles that can cause inconsistent rendering.
+          - Flag changes that bypass established design tokens/utilities in favor of ad-hoc custom values without justification.
+
+        Note: Do not duplicate the general "Key Focus Areas" and "Requirements" content here; those are already provided in the required sections above. Keep this section focused on Vue + CHI-specific guidance and PR review expectations only.
+    validations:
+      required: false
+
+  - type: textarea
+    id: ai-attribution
+    attributes:
+      label: AI Attribution
+      description: Add any AI-generated content attribution or disclaimers for this repository
+      value: |
+        Ensure copilot-instructions.md has a section named AI Attribution and Traceability Policy.
+
+        Idempotent behavior requirements
+        - If the section already exists, replace only that section content.
+        - If the section does not exist, append it near other coding standards/policy sections.
+        - Do not modify unrelated sections or reformat the whole file.
+
+        Content requirements
+        - Include a clear trigger of when attribution is required and when it is not.
+        - Include exact fixed attribution format:
+          AI-ATTRIBUTION: generated-by=<agent_or_tool>; model=<model_name>; timestamp=<UTC_ISO8601>; task=<ticket_or_issue>; mode=<assisted_or_autonomous>
+        - Include examples for slash-comment languages, hash-comment languages, and SQL comment style.
+        - Include placement, update, and removal rules.
+        - Include security rules: no secrets, no prompt text, no sensitive data in attribution.
+        - Include caveat text that attribution is an explicit signal, not cryptographic proof.
+        - Include recommendation to enforce via CI and PR template metadata.
+        - Include a recommendation that commit messages for AI-assisted changes also include the same attribution line in the commit body (as a "tool used" note) so the developer can receive AI adoption metrics credit.
+
+        Output requirements
+        - Return a patch/diff for .github/copilot-instructions.md.
+        - Keep wording concise and policy-like.
+        - Preserve existing project conventions and headings style.
+
+        Acceptance criteria
+
+        - Section title exactly `AI Attribution and Traceability Policy`.
+        - Canonical attribution line is specified once in canonical form (examples may repeat it).
+        - Includes assisted and autonomous mode values.
+        - Includes at least one example showing a concrete model value (for example `model=GPT-5.3-Codex`) and explicitly instructs replacing it with the actual model name used.
+        - File remains valid markdown and readable.
+    validations:
+      required: false
 
   - type: textarea
     id: additional-context
