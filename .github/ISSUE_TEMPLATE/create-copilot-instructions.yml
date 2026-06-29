@@ -223,7 +223,7 @@ body:
         - Include security rules: no secrets, no prompt text, no sensitive data in attribution.
         - Include caveat text that attribution is an explicit signal, not cryptographic proof.
         - Include recommendation to enforce via CI and PR template metadata.
-        - Include mention that generated commit messages should also include the same attribution line in the commit body mentioned as a tool used so the developer can get credited with ai adoption metrics.
+        - Include a recommendation that commit messages for AI-assisted changes also include the same attribution line in the commit body (as a "tool used" note) so the developer can receive AI adoption metrics credit.
 
         Output requirements
         - Return a patch/diff for .github/copilot-instructions.md.
