@@ -199,7 +199,7 @@ body:
         - If the repository is Vue-based UI, include a dedicated section named `Vue PR Review Rules` with required CHI validation checks for `.vue` file changes.
         - If the repository is Vue-based UI, include a dedicated section named `Automatic Vue UI PR Review Feedback` describing the required structure and quality bar for Copilot PR comments.
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: ai-attribution
