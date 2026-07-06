@@ -30,6 +30,7 @@ body:
         - CI/CD & operations: inspect pipelines, automation scripts, IaC, recurring failures, flaky tests, and recommend tooling reliability improvements.
         - Modernization roadmap: flag outdated platforms, suggest upgrade sequencing, quick wins, longer-term initiatives, and cost/impact rationale.
         - Scoring & reporting: assign 1-10 scores for required categories, produce a Mermaid architecture diagram, summarize open improvement issues with links and actions, and close with explicit stakeholder next steps.
+        - AI adoption analysis: assess explicit AI-assisted commit activity for the last 6 months across all refs and what reached master, and generate the required markdown/csv deliverables under copilot-eval.
         - Special instructions: reference files by relative path, append `/copilot-eval` to `.prettierignore` if it exists, and ensure all artifacts reside under `copilot-eval/`.
         - Vue UI guidance: evaluate every view, page, and component against Chi component usage (web components or HTML boilerplate), treating the CDN-style script or stylesheet version declared in the primary HTML entrypoint as the canonical Chi release even if chi-vue packages differ.
         - Java logging guidance: audit logging statements for noisy or frivolous entries, confirm true exceptions log full stack context, and surface any swallowed errors.
@@ -56,6 +57,7 @@ body:
         | Dependencies           |       |               |
         | CHI Compliance (if applicable) |       |               |
         | Logging (if applicable)        |       |               |
+        | AI Adoption           |       |               |
 
         *Provide a numeric score (1-10) and concise justification for every relevant dimension. Note conditional categories only when they apply.*
         *It is important this scoring is consistent with the detailed findings and justifications provided in the associated deliverables (e.g., chi-compliance.md should support the CHI Compliance score, logging-review.md should support the Logging score, etc.).*
@@ -79,6 +81,9 @@ body:
         - Scoring table with 1-10 ratings and rationales → `copilot-eval/scoring.md`
         - Mermaid architecture diagram source → `copilot-eval/architecture.mmd`
         - Improvement-focused GitHub issue synopsis → `copilot-eval/improvement-issues.md`
+        - AI adoption analysis narrative with adoption score, shipped-to-master breakdown, and recommendations (last 6 months) → `copilot-eval/ai-adoption.md`
+        - AI adoption commit-level data for explicit AI-related commits (last 6 months) → `copilot-eval/ai-adoption.csv`
+        - AI adoption aggregated per developer with normalized identities (last 6 months) → `copilot-eval/ai-adoption-by-developer.csv`
         - Chi design system compliance review (Vue UI only; analyze all views/pages/components, cite deviations, prioritize remediation steps, include a 1-10 compliance score, and base versioning on the CDN reference) → `copilot-eval/chi-compliance.md`
         - Logging practices review (Java code only; include a 1-10 logging hygiene score, highlight noisy/frivolous logs, confirm exceptions retain full stack traces, flag swallowed errors) → `copilot-eval/logging-review.md`
 
@@ -137,7 +142,7 @@ body:
           - Justify recommendations: explain risks and benefits for each change.
           - List quick wins for stabilization and security, and note longer-term investments.
         7. Scoring & Reporting
-          - Score each dimension (Code Quality, Architecture, Testing, Security, Performance, Maintainability, CI/CD Pipeline, Documentation, Modernization, Dependencies, CHI compliance (if applicable), logging (if applicable)) on a 1-10 scale with brief justification.
+          - Score each dimension (Code Quality, Architecture, Testing, Security, Performance, Maintainability, CI/CD Pipeline, Documentation, Modernization, Dependencies, CHI compliance (if applicable), logging (if applicable), AI Adoption) on a 1-10 scale with brief justification.
           - Generate a Mermaid diagram that visualizes the current system architecture and key interactions.
           - Summarize open GitHub issues related to improvements with reference links and recommended next actions.
 
@@ -152,6 +157,9 @@ body:
         - scoring.md — tabular scoring with 1-10 ratings and justifications.
         - architecture.mmd — Mermaid diagram source for the architecture.
         - improvement-issues.md — synopsis of open improvement-focused GitHub issues with solution steps.
+        - ai-adoption.md — explicit AI adoption analysis for the last 6 months with an executive judgment (low/moderate/high), score, shipped-to-master section, contributor/subsystem adoption analysis, non-adopter table, next steps, and caveats.
+        - ai-adoption.csv — commit-level explicit AI-related commits in the last 6 months with columns: sha, date, author, normalized_author, subject, on_master, files_changed, top_level_area, dominant_subsystem, dominant_file.
+        - ai-adoption-by-developer.csv — developer aggregation from ai-adoption.csv with columns: developer, total_ai_commits, ai_commits_on_master, ai_commits_off_master, master_commit_share_pct.
         - chi-compliance.md — generated only when the repository includes a Vue-based UI; 
           * FIRST, check index.html for Chi CDN references (CSS/JS URLs) - this is the authoritative Chi version
           * Report the Chi version from index.html CDN URLs (e.g., https://lib.lumen.com/chi/5.78.0/chi-portal.css)
@@ -166,6 +174,20 @@ body:
         - Reference specific files with relative paths when citing evidence.
         - If a .prettierignore file exists, append copilot-eval to the ignore list without removing existing entries.
         - Close with explicit next steps or questions for stakeholders when risks remain unresolved.
+        - AI Adoption Report Requirements (last 6 months, output to copilot-eval):
+          * Analyze commits from now minus 6 months through today.
+          * Include all refs for contribution analysis, and separately analyze what reached master.
+          * Treat explicit AI-related commits as commit subjects containing (case-insensitive): copilot, @Copilot, ai-assisted, gpt, claude, cursor.
+          * Treat on_master as commit is an ancestor of master.
+          * Treat content commit as files_changed > 0 and merge-only commit as files_changed = 0.
+          * Gather baseline counts: total commits in 6 months (all refs) and total commits in 6 months on master.
+          * Build ai-adoption.csv with one row per explicit AI-related commit and columns exactly: sha, date, author, normalized_author, subject, on_master, files_changed, top_level_area, dominant_subsystem, dominant_file.
+          * Compute normalized_author by merging obvious aliases via shared email identity and clear name/username variants (e.g., corporate name vs GitHub handle), and document normalization caveat in markdown.
+          * Build ai-adoption-by-developer.csv from ai-adoption.csv with columns exactly: developer, total_ai_commits, ai_commits_on_master, ai_commits_off_master, master_commit_share_pct.
+          * Detect active contributors with zero explicit AI signal: all active contributors in 6 months minus normalized authors in ai-adoption.csv, and include commit counts for this group.
+          * Avoid brittle one-liner heredocs in terminal; if scripting is needed, create small temporary scripts/files, run them, and clean up helper artifacts afterward.
+          * ai-adoption.md must include: Executive Judgment (moderate/low/high) with rationale; Method with exact filter terms, timeframe, and lower-bound caveat; section #2 What Actually Shipped To master with counts and table (Date, Author, SHA short, Subject, Dominant subsystem, Files changed); section #3 Developer And Subsystem Adoption with normalized contributor counts and subsystem distribution; section All AI Contributions Per Developer sourced from ai-adoption-by-developer.csv (Developer, Total AI commits, AI commits on master, AI commits off master, master share); section Developers With 0 Explicit AI Assistance (Developer, six-month commit count, recommendation priority); section Next Steps; and section Caveats.
+          * Quality bar: markdown numbers must reconcile with both CSVs; use normalized identities for developer reporting; distinguish all AI contributions vs merged-to-master AI contributions; remove temporary helper artifacts; validate outputs are readable and error-free.
         - For Vue-based UI repositories, expand the analysis phase to review template markup across all views, pages, and components against Chi component guidance (web components or HTML boilerplate) and describe non-compliant patterns in chi-compliance.md.
         - When reporting Chi compliance, treat the version declared by the CDN-style script or stylesheet reference in the primary HTML entrypoint (for example, `<script src="https://lib.lumen.com/chi/5.78.0/js/chi.js" ...>`) as the authoritative design system version even if package.json or chi-vue dependencies specify different numbers.
         - For Java repositories, audit logging frameworks and statements to highlight excessive verbosity, missing stack traces, or swallowed exceptions and document findings in logging-review.md.
