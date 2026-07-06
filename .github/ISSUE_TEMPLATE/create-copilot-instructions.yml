@@ -32,6 +32,7 @@ body:
         - **Test coverage:** Specify requirements and expectations for automated testing, including coverage thresholds and locations of tests.
         - **Linting rules:** List and explain all linting and formatting rules to be enforced, referencing configuration files if present (e.g., ESLint, Prettier).
         - **Adherence to existing guidelines:** Summarize and link to any existing documentation for contribution, style guides, review processes, or CI/CD requirements.
+        - **Technology/version inventory intent:** Capture discovered stack choices and versions as reference context; do not present them as strict lock-in requirements unless the repository explicitly states they are mandatory.
     validations:
       required: true
 
@@ -45,7 +46,8 @@ body:
         - Review all configuration files, documentation, and code comments for relevant standards.
         - Highlight any repository-specific nuances.
         - If an existing `copilot-instructions.md` is present, preserve all still-valid high-signal operational details (commands, ports, auth setup, CI gates, troubleshooting), then refine and expand.
-        - Include concrete commands and thresholds where available (for example lint warning limits, test coverage targets, required runtime versions).
+        - Include concrete commands and thresholds where available (for example lint warning limits, test coverage targets, observed runtime versions).
+        - Treat discovered technology and version details as informative baseline context unless the repository explicitly defines hard requirements.
         - Do not output a generic template. The result must be repository-specific and actionable.
     validations:
       required: true
@@ -76,6 +78,7 @@ body:
         - Keep operationally useful detail; do not collapse detailed guidance into a high-level summary.
         - Prefer command-level instructions over abstract descriptions.
         - Include concrete values discovered in-repo (ports, scripts, versions, limits) when available.
+        - When listing technologies or versions, frame them as inventory/reference context and avoid implying tool/version lock-in unless the repository explicitly requires it.
     validations:
       required: true
 
@@ -93,9 +96,9 @@ body:
         - Apply CHI compliance review rules only for Vue-based UI repositories and `.vue` UI changes.
         - Do not apply CHI UI compliance rules to API/service repositories (for example Java or Node.js backend repos) unless they also contain Vue UI code under review.
 
-        Design System Requirement for Vue UI Repositories (Mandatory)
-        - Treat the internal CHI design system as a hard requirement for UI work in Vue-based UI repositories.
-        - Enforce CHI version `5.78.0` only. Do not recommend, mix in, or migrate to other CHI versions.
+        Design System Baseline for Vue UI Repositories (Mandatory)
+        - Treat the internal CHI design system as the primary reference baseline for UI work in Vue-based UI repositories.
+        - Use CHI version `5.78.0` as the default reference point for review guidance unless the repository explicitly documents a different required version.
         - Use publicly accessible CHI 5.78.0 portal documentation as the external reference point:
           - `https://assets.ctl.io/chi/5.78.0/getting-started/?theme=Portal`
 
