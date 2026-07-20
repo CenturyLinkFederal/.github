@@ -1,0 +1,46 @@
+#!/bin/bash
+# AI Adoption Signal Detection Hook
+# Auto-tags commits assisted by GitHub Copilot or other AI tools
+# Idempotent: safe to run on every commit
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+
+# Skip if commit is from merge or squash (auto-generated commit messages)
+if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "squash" ]; then
+  exit 0
+fi
+
+# Read current commit message
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Check for AI signals in multiple places
+# Signal 1: GitHub Copilot co-author metadata
+HAS_COPILOT_COAUTHOR=$(echo "$COMMIT_MSG" | grep -qi "co-authored-by.*github copilot" && echo 1 || echo 0)
+
+# Signal 2: Explicit AI markers at start of message
+HAS_COPILOT_MARKER=$(echo "$COMMIT_MSG" | grep -qiE "^(copilot|ai-assisted|@copilot):" && echo 1 || echo 0)
+
+# Signal 3: AI tool mentions in commit body
+HAS_AI_PATTERN=$(echo "$COMMIT_MSG" | grep -qiE "(copilot|claude|gpt|cursor|ai-assisted)" && echo 1 || echo 0)
+
+# Idempotent check: don't re-tag if already tagged
+if echo "$COMMIT_MSG" | head -1 | grep -q "^\[AI-ASSISTED\]"; then
+  exit 0
+fi
+
+# Auto-tag if any AI signal detected
+if [ "$HAS_COPILOT_COAUTHOR" -gt 0 ] || [ "$HAS_COPILOT_MARKER" -gt 0 ] || [ "$HAS_AI_PATTERN" -gt 0 ]; then
+  FIRST_LINE=$(echo "$COMMIT_MSG" | head -1)
+  REST=$(echo "$COMMIT_MSG" | tail -n +2)
+  
+  # Prepend tag to first line (idempotent: already checked above)
+  if [ -z "$REST" ]; then
+    echo "[AI-ASSISTED] $FIRST_LINE" > "$COMMIT_MSG_FILE"
+  else
+    echo "[AI-ASSISTED] $FIRST_LINE" > "$COMMIT_MSG_FILE"
+    echo "$REST" >> "$COMMIT_MSG_FILE"
+  fi
+fi
+
+exit 0
