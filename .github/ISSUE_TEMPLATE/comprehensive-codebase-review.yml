@@ -194,10 +194,11 @@ body:
           * Treat content commit as files_changed > 0 and merge-only commit as files_changed = 0.
           * Gather baseline counts: total commits in 6 months (all refs) and total commits in 6 months on master.
           * **Squashed Commit Inspection** (critical for accurate adoption metrics):
-              - For each merge commit on master, detect if it is a squash-merge (single parent with multiple logical commits collapsed into one).
-              - Use `git log <merge-commit>^..<merge-commit> --pretty=format:"%H|%an|%ae|%s|%b"` to inspect the individual commits that were squashed before merge.
-              - Scan all squashed individual commits for AI signals (explicit keywords, metadata, patterns) in subject and body; if any contain AI signals, attribute the AI work to the original committers (not the merge author).
-              - Extract files_changed by analyzing the diff of each squashed commit: `git diff <commit>^..<commit> --name-only | wc -l`.
+              - For each *squash-merged PR commit* on master (typically a single-parent commit with subject like `... (#123)`), extract the PR number from the commit subject.
+              - If PR metadata is available (GitHub API), list the PR's commits and scan each commit subject/body for AI signals (explicit keywords, metadata, patterns).
+              - If PR metadata is not available locally, document that individual pre-squash commits cannot be reliably recovered from git history alone.
+              - Attribute detected AI signals to the original PR commit authors (not the squash-merge author) when PR commit data is available.
+              - Document the observed merge strategy (squash vs. merge vs. rebase) and any recovery limitations in the Caveats section.
               - For squashed commits with AI signals, preserve the original author/date and create a logical "unmerged" entry in ai-adoption.csv with the source commits listed in a supplementary column.
               - If PR metadata is available (GitHub API), cross-reference the PR number from the merge commit message to retrieve the full commit history before squashing.
               - Document merge strategy (squash vs. fast-forward vs. three-way merge) in the Caveats section and note any adoption metrics recovered from squashed commits.
