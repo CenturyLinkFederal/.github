@@ -185,9 +185,7 @@ body:
               5. Implicit Patterns (fallback): Scan commit message structure for AI-generated patterns (e.g., structured formatting, typical Copilot phrasing, co-authored metadata like "Co-authored-by: GitHub Copilot").
               6. Squashed Commit Recovery: Extract AI signals from individual commits inside squashed merges using all methods above.
           * Recommended Setup for Minimal Developer Friction:
-              - Use a git hook (prepare-commit-msg or commit-msg) to auto-detect and auto-tag AI commits at push time.
-              - Example: `if git diff --cached | grep -q "^+.*TODO\|FIXME\|DEBUG"` or integrate with Copilot CLI for automatic detection.
-              - Developers do nothing; the system tags automatically.
+              - Use a git hook (prepare-commit-msg or commit-msg) to auto-detect and auto-tag AI commits at commit time.
               - Provide a `.githooks/prepare-commit-msg` template in the repo README for teams to adopt.
           * If no automation in place, fall back to explicit keyword detection; but acknowledge this undercounts adoption.
           * Treat on_master as commit is an ancestor of master.
