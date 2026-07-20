@@ -6,8 +6,8 @@
 COMMIT_MSG_FILE=$1
 COMMIT_SOURCE=$2
 
-# Skip if commit is from merge, squash, rebase, or other special cases
-if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "squash" ] || [ "$COMMIT_SOURCE" = "rebase" ]; then
+# Skip if commit is from merge or squash (auto-generated commit messages)
+if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "squash" ]; then
   exit 0
 fi
 
