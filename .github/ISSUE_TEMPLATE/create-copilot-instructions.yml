@@ -188,6 +188,150 @@ body:
       required: false
 
   - type: textarea
+    id: ai-adoption-tracking
+    attributes:
+      label: AI Adoption Tracking Setup
+      description: Auto-tag AI-assisted commits for adoption metrics
+      value: |
+        Step 3 (Always Required) - Create AI Adoption Git Hook and Setup
+
+        Create the git hook file:
+        - **Location:** `.githooks/prepare-commit-msg`
+        - **Make executable:** `chmod +x .githooks/prepare-commit-msg`
+        - **Idempotent:** If the file already exists with correct content, skip creation. If outdated, replace it.
+
+        Hook Implementation
+        Create the file with the following content:
+
+        ```bash
+        #!/bin/bash
+        # AI Adoption Signal Detection Hook
+        # Auto-tags commits assisted by GitHub Copilot or other AI tools
+        # Idempotent: safe to run on every commit
+
+        COMMIT_MSG_FILE=$1
+        COMMIT_SOURCE=$2
+
+        # Skip if commit is from merge, squash, rebase, or other special cases
+        if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "squash" ] || [ "$COMMIT_SOURCE" = "rebase" ]; then
+          exit 0
+        fi
+
+        # Read current commit message
+        COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+        # Check for AI signals in multiple places
+        HAS_COPILOT_COAUTHOR=$(echo "$COMMIT_MSG" | grep -i "co-authored-by.*github copilot" | wc -l)
+        HAS_COPILOT_MARKER=$(echo "$COMMIT_MSG" | grep -iE "^(copilot|ai-assisted|@copilot):" | wc -l)
+        HAS_AI_PATTERN=$(echo "$COMMIT_MSG" | grep -iE "(copilot|claude|gpt|cursor|ai-assisted)" | wc -l)
+
+        # Idempotent check: don't re-tag if already tagged
+        if echo "$COMMIT_MSG" | head -1 | grep -q "^\[AI-ASSISTED\]"; then
+          exit 0
+        fi
+
+        # Auto-tag if any AI signal detected
+        if [ "$HAS_COPILOT_COAUTHOR" -gt 0 ] || [ "$HAS_COPILOT_MARKER" -gt 0 ] || [ "$HAS_AI_PATTERN" -gt 0 ]; then
+          FIRST_LINE=$(echo "$COMMIT_MSG" | head -1)
+          REST=$(echo "$COMMIT_MSG" | tail -n +2)
+          
+          if [ -z "$REST" ]; then
+            echo "[AI-ASSISTED] $FIRST_LINE" > "$COMMIT_MSG_FILE"
+          else
+            echo "[AI-ASSISTED] $FIRST_LINE" > "$COMMIT_MSG_FILE"
+            echo "$REST" >> "$COMMIT_MSG_FILE"
+          fi
+        fi
+
+        exit 0
+        ```
+
+        Step 3A - For Node.js Projects
+        If package.json exists, add these scripts to enable automatic hook setup on npm install:
+
+        ```json
+        "scripts": {
+          "postinstall": "git config core.hooksPath .githooks",
+          "prepare": "git config core.hooksPath .githooks"
+        }
+        ```
+
+        - `postinstall`: Runs after `npm install` installs dependencies
+        - `prepare`: Runs before `npm install` and also on `npm ci`
+        - Result: Developers get hook setup automatically with zero extra steps
+
+        Add to copilot-instructions.md for Node projects:
+        ```markdown
+        ## Git Hook Setup (Automatic)
+
+        When you run `npm install` or `npm ci`, the git hook path is automatically configured.
+
+        **Verify setup:**
+        ```bash
+        git config core.hooksPath
+        ```
+        Should output: `.githooks`
+
+        **What happens:** Commits using Copilot are automatically tagged with `[AI-ASSISTED]`.
+        ```
+
+        Step 3B - For Non-Node Projects (Java, Python, etc.)
+        If package.json does NOT exist, create `.githooks/setup-dev-env.sh` as follows:
+
+        ```bash
+        #!/bin/bash
+        set -e
+
+        echo "🔧 Setting up development environment..."
+
+        # Configure git hooks
+        git config core.hooksPath .githooks
+        echo "✓ Git hooks configured"
+
+        # Add project-specific setup here (database, environment variables, etc.)
+        # Example:
+        # if [ -f ".env.example" ]; then
+        #   cp .env.example .env
+        #   echo "✓ Environment file created"
+        # fi
+
+        echo "✅ Setup complete!"
+        echo ""
+        echo "To verify hook setup:"
+        echo "  git config core.hooksPath"
+        ```
+
+        Add to copilot-instructions.md for non-Node projects:
+        ```markdown
+        ## Development Setup
+
+        Before starting development, run the setup script once:
+
+        ```bash
+        ./setup-dev-env.sh
+        ```
+
+        This script:
+        - Configures git hooks for AI adoption tracking
+        - [Add other setup steps specific to your project]
+
+        **What happens:** Commits using Copilot are automatically tagged with `[AI-ASSISTED]`.
+
+        **Verify setup:**
+        ```bash
+        git config core.hooksPath
+        ```
+        Should output: `.githooks`
+        ```
+
+        Integration with Comprehensive Review
+        - The `comprehensive-codebase-review.yml` will detect `[AI-ASSISTED]` tags and other AI signals
+        - Tagged commits are counted in `copilot-eval/ai-adoption.md` with `signal_type = git_hook`
+        - Zero developer friction: hook auto-tags, no manual tagging required
+    validations:
+      required: true
+
+  - type: textarea
     id: ai-attribution
     attributes:
       label: AI Attribution

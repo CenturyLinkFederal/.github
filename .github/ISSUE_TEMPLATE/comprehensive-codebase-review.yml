@@ -157,8 +157,8 @@ body:
         - scoring.md — tabular scoring with 1-10 ratings and justifications.
         - architecture.mmd — Mermaid diagram source for the architecture.
         - improvement-issues.md — synopsis of open improvement-focused GitHub issues with solution steps.
-        - ai-adoption.md — explicit AI adoption analysis for the last 6 months with an executive judgment (low/moderate/high), score, shipped-to-master section, contributor/subsystem adoption analysis, non-adopter table, next steps, and caveats.
-        - ai-adoption.csv — commit-level explicit AI-related commits in the last 6 months with columns: sha, date, author, normalized_author, subject, on_master, files_changed, top_level_area, dominant_subsystem, dominant_file.
+        - ai-adoption.md — explicit AI adoption analysis for the last 6 months with an executive judgment (low/moderate/high), score, shipped-to-master section, contributor/subsystem adoption analysis, **squashed commits analysis**, non-adopter table, next steps, and caveats.
+        - ai-adoption.csv — commit-level explicit AI-related commits in the last 6 months with columns: sha, date, author, normalized_author, subject, on_master, files_changed, top_level_area, dominant_subsystem, dominant_file, squash_merge_indicator, signal_type (explicit_keyword | github_metadata | git_hook | implicit_pattern).
         - ai-adoption-by-developer.csv — developer aggregation from ai-adoption.csv with columns: developer, total_ai_commits, ai_commits_on_master, ai_commits_off_master, master_commit_share_pct.
         - chi-compliance.md — generated only when the repository includes a Vue-based UI; 
           * FIRST, check index.html for Chi CDN references (CSS/JS URLs) - this is the authoritative Chi version
@@ -177,21 +177,43 @@ body:
         - AI Adoption Report Requirements (last 6 months, output to copilot-eval):
           * Analyze commits from now minus 6 months through today.
           * Include all refs for contribution analysis, and separately analyze what reached master.
-          * Treat explicit AI-related commits as commit subjects containing (case-insensitive): copilot, @Copilot, ai-assisted, gpt, claude, cursor.
+          * **Signal Detection Strategy** (multiple layers to reduce developer friction):
+              1. Explicit AI Keywords (optional, zero friction if auto-tagged): Treat commit subjects containing (case-insensitive): copilot, @Copilot, ai-assisted, gpt, claude, cursor.
+              2. GitHub Copilot Attribution Metadata: If available, detect commits tagged with GitHub's AI-generated indicator (via GitHub API or webhook metadata).
+              3. Git Hooks (recommended for ease-of-use): If the repo includes a `.githooks/prepare-commit-msg` hook or similar, document its presence and how it auto-tags AI commits without developer intervention.
+              4. IDE/CLI Integration: Note if the codebase uses Copilot CLI or IDE extensions that auto-append AI indicators at commit time (no developer action required).
+              5. Implicit Patterns (fallback): Scan commit message structure for AI-generated patterns (e.g., structured formatting, typical Copilot phrasing, co-authored metadata like "Co-authored-by: GitHub Copilot").
+              6. Squashed Commit Recovery: Extract AI signals from individual commits inside squashed merges using all methods above.
+          * Recommended Setup for Minimal Developer Friction:
+              - Use a git hook (prepare-commit-msg or commit-msg) to auto-detect and auto-tag AI commits at push time.
+              - Example: `if git diff --cached | grep -q "^+.*TODO\|FIXME\|DEBUG"` or integrate with Copilot CLI for automatic detection.
+              - Developers do nothing; the system tags automatically.
+              - Provide a `.githooks/prepare-commit-msg` template in the repo README for teams to adopt.
+          * If no automation in place, fall back to explicit keyword detection; but acknowledge this undercounts adoption.
           * Treat on_master as commit is an ancestor of master.
           * Treat content commit as files_changed > 0 and merge-only commit as files_changed = 0.
           * Gather baseline counts: total commits in 6 months (all refs) and total commits in 6 months on master.
-          * Build ai-adoption.csv with one row per explicit AI-related commit and columns exactly: sha, date, author, normalized_author, subject, on_master, files_changed, top_level_area, dominant_subsystem, dominant_file.
+          * **Squashed Commit Inspection** (critical for accurate adoption metrics):
+              - For each merge commit on master, detect if it is a squash-merge (single parent with multiple logical commits collapsed into one).
+              - Use `git log <merge-commit>^..<merge-commit> --pretty=format:"%H|%an|%ae|%s|%b"` to inspect the individual commits that were squashed before merge.
+              - Scan all squashed individual commits for AI signals (explicit keywords, metadata, patterns) in subject and body; if any contain AI signals, attribute the AI work to the original committers (not the merge author).
+              - Extract files_changed by analyzing the diff of each squashed commit: `git diff <commit>^..<commit> --name-only | wc -l`.
+              - For squashed commits with AI signals, preserve the original author/date and create a logical "unmerged" entry in ai-adoption.csv with the source commits listed in a supplementary column.
+              - If PR metadata is available (GitHub API), cross-reference the PR number from the merge commit message to retrieve the full commit history before squashing.
+              - Document merge strategy (squash vs. fast-forward vs. three-way merge) in the Caveats section and note any adoption metrics recovered from squashed commits.
+          * Build ai-adoption.csv with one row per explicit AI-related commit (including unmerged squashed commits) and columns exactly: sha, date, author, normalized_author, subject, on_master, files_changed, top_level_area, dominant_subsystem, dominant_file, squash_merge_indicator (true/false), signal_type (explicit_keyword | github_metadata | git_hook | implicit_pattern).
           * Compute normalized_author by merging obvious aliases via shared email identity and clear name/username variants (e.g., corporate name vs GitHub handle), and document normalization caveat in markdown.
           * Build ai-adoption-by-developer.csv from ai-adoption.csv with columns exactly: developer, total_ai_commits, ai_commits_on_master, ai_commits_off_master, master_commit_share_pct.
           * Detect active contributors with zero explicit AI signal: all active contributors in 6 months minus normalized authors in ai-adoption.csv, and include commit counts for this group.
           * Avoid brittle one-liner heredocs in terminal; if scripting is needed, create small temporary scripts/files, run them, and clean up helper artifacts afterward.
-          * ai-adoption.md must include: Executive Judgment (moderate/low/high) with rationale; Method with exact filter terms, timeframe, and lower-bound caveat; section #2 What Actually Shipped To master with counts and table (Date, Author, SHA short, Subject, Dominant subsystem, Files changed); section #3 Developer And Subsystem Adoption with normalized contributor counts and subsystem distribution; section All AI Contributions Per Developer sourced from ai-adoption-by-developer.csv (Developer, Total AI commits, AI commits on master, AI commits off master, master share); section Developers With 0 Explicit AI Assistance (Developer, six-month commit count, recommendation priority); section Next Steps; and section Caveats.
-          * Quality bar: markdown numbers must reconcile with both CSVs; use normalized identities for developer reporting; distinguish all AI contributions vs merged-to-master AI contributions; remove temporary helper artifacts; validate outputs are readable and error-free.
+          * ai-adoption.md must include: Executive Judgment (moderate/low/high) with rationale; Method with exact filter terms, timeframe, lower-bound caveat, **merge strategy discovery notes**, and **detection strategy used** (explicit keywords only vs. multi-signal); section #2 What Actually Shipped To master with counts and table (Date, Author, SHA short, Subject, Dominant subsystem, Files changed, Squash Indicator, Signal Type); section #3 Developer And Subsystem Adoption with normalized contributor counts and subsystem distribution; section All AI Contributions Per Developer sourced from ai-adoption-by-developer.csv (Developer, Total AI commits, AI commits on master, AI commits off master, master share); section Developers With 0 Explicit AI Assistance (Developer, six-month commit count, recommendation priority); **section Squashed Commits Analysis** with summary of recovered AI signals, original vs. merge authors, and files impacted; section Setup Recommendations (e.g., "Add git hooks for zero-friction auto-tagging"; section Next Steps; and section Caveats.
+          * Quality bar: markdown numbers must reconcile with both CSVs and squashed commit inspection logs; use normalized identities for developer reporting; distinguish all AI contributions vs merged-to-master AI contributions; account for squashed commits when computing adoption rate; remove temporary helper artifacts; validate outputs are readable and error-free.
         - For Vue-based UI repositories, expand the analysis phase to review template markup across all views, pages, and components against Chi component guidance (web components or HTML boilerplate) and describe non-compliant patterns in chi-compliance.md.
         - When reporting Chi compliance, treat the version declared by the CDN-style script or stylesheet reference in the primary HTML entrypoint (for example, `<script src="https://lib.lumen.com/chi/5.78.0/js/chi.js" ...>`) as the authoritative design system version even if package.json or chi-vue dependencies specify different numbers.
         - For Java repositories, audit logging frameworks and statements to highlight excessive verbosity, missing stack traces, or swallowed exceptions and document findings in logging-review.md.
-        - Ensure the scores calculated per category in the table match exactly with the scores reported per associated category detail deliverable.  
+        - Ensure the scores calculated per category in the table match exactly with the scores reported per associated category detail deliverable.
+        - **Squashed Commits & Merge Strategy Handling**: When ai-adoption.csv includes squashed commits, clearly document the merge strategy observed in the repository (e.g., "squash-and-merge", "conventional merge", "rebase-and-merge"), the proportion of commits squashed vs. merged linearly, and any assumptions made during individual commit extraction. Update adoption rates in ai-adoption.md to reflect both direct signals and recovered signals from squashed commits, with separate line items for each category.
+        - **Zero-Friction AI Adoption Tracking**: To avoid burdening developers with manual tagging, prefer automated detection methods over explicit keywords. Order of detection preference: (1) GitHub Copilot metadata / API attribution, (2) Git hooks that auto-tag at commit time, (3) IDE/CLI integration auto-detection, (4) Implicit patterns in commit structure, (5) Explicit keywords as fallback. When setting up the analysis, check for existence of `.githooks/` or `.git/hooks/` directory and document any auto-tagging infrastructure. If no automation exists, recommend adding a `prepare-commit-msg` hook template to the repo README with instructions for developers to opt-in passively (hook runs automatically after commit, no manual action required). Report which detection methods were used and their coverage in the ai-adoption.md Method section.  
     validations:
       required: true
 
