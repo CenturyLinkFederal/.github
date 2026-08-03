@@ -344,6 +344,13 @@ body:
         - If the section does not exist, append it near other coding standards/policy sections.
         - Do not modify unrelated sections or reformat the whole file.
 
+        Dedicated enforcement file (Always Required for Every Repository)
+        In addition to the copilot-instructions.md section above, create or update a dedicated, always-loaded instructions file so the policy cannot be missed mid-session by an AI agent:
+        - Path: `.github/instructions/ai-attribution.instructions.md`
+        - Frontmatter: `description` (keyword-rich) and `applyTo: "**"` so it is always included for every request.
+        - Body: restate the exact attribution comment format (`AI-ATTRIBUTION: generated-by=<agent_or_tool>; model=<model_name>; timestamp=<UTC_ISO8601>; task=<ticket_or_issue>; mode=<assisted_or_autonomous>`), the exemption for trivial/human-only edits, the refresh-not-duplicate rule, the commit-message requirement, the secrets/prompt-text prohibition, and a link back to `../copilot-instructions.md#ai-attribution-and-traceability-policy`.
+        - Idempotent: if the file already exists, update it in place rather than duplicating or creating a second file. Keep it under 50 lines since `applyTo: "**"` loads it on every request.
+        
         Content requirements
         - Include a clear trigger of when attribution is required and when it is not.
         - Include exact fixed attribution format:
